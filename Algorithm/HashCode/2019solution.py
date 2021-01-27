@@ -12,7 +12,7 @@ MERGE_WINDOW = 10000
 ARRANGE_WINDOW = 10000
 
 def read_file(file_path):
-    with open(filepath) as f:
+    with open(file_path) as f:
         pictures = [row.strip().split() for row in f.readlines()[1:]]
     
     pic_tags = {}
@@ -31,10 +31,11 @@ def read_file(file_path):
 file_path = './input/'
 pic_tags, horizontal_photos, vertical_photos = read_file(file_path)
 
+# 태그들이 주어질 때 점수 산정 방법입니다. 
 def calc_tags_pair_score(tags1, tags2):
     return min(len(tags1 & tags2), len(tags1 - tags2), len(tags2 - tags1))
 
-
+# idx가 의미하는게 무엇일까??? 
 def calc_idxs_pair_score(idxs1, idxs2):
     # given two tuples of indices, calculate the score
     return calc_tags_pair_score(
@@ -46,6 +47,7 @@ def calc_idxs_pair_score_max(idxs1, idxs2):
     return min(len(set.union(*[pic_tags[idx] for idx in idxs1])),
                len(set.union(*[pic_tags[idx] for idx in idxs2])))//2
 
+# 점수 산정 방법. 슬라이드들의 순서가 주어지면 점수를 계산한다. 
 def calc_sequence(idxs_lst):
     # given the sequence of indices, calculate the score
     check_validity(idxs_lst)
