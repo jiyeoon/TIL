@@ -244,5 +244,5 @@ even_squares = [x**2 for x in a if x%2 == 0]
 alt = map(lambda x : x**2, filter(lambda x : x % 2 == 0, a))
 ```
 
-
+이러한 이유로 리스트 컴프리헨션을 써주는 것이 좋다!
 
