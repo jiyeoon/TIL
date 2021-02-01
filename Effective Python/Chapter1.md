@@ -6,6 +6,7 @@
   - [Better Way 5. 시퀀스를 슬라이스 하는 방법을 알자.](#better-way-5-시퀀스를-슬라이스-하는-방법을-알자)
   - [Better way 6. 한 슬라이스에 start, end, stride를 함께 쓰지 말자](#better-way-6-한-슬라이스에-start-end-stride를-함께-쓰지-말자)
   - [Better way 7. map과 filter 대신 리스트 컴프리헨션을 사용하자.](#better-way-7-map과-filter-대신-리스트-컴프리헨션을-사용하자)
+  - [Better way 8. 리스트 컴프리헨션에서 표현식을 두개 넘게 쓰지 말자](#better-way-8-리스트-컴프리헨션에서-표현식을-두개-넘게-쓰지-말자)
 
 # Effective Python
 
@@ -246,3 +247,6 @@ alt = map(lambda x : x**2, filter(lambda x : x % 2 == 0, a))
 
 이러한 이유로 리스트 컴프리헨션을 써주는 것이 좋다!
 
+## Better way 8. 리스트 컴프리헨션에서 표현식을 두개 넘게 쓰지 말자
+
+리스트 컴프리헨션은 기본 사용법뿐만 아니라 다중 루프도 지원한다. 예를 들어 행렬을 모든 셀이 
