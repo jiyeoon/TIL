@@ -277,4 +277,36 @@ def index_words_iter(text):
             yield index + 1
 ```
 
-결과 리스트와 연동하는 부분이 모두 사라져서 훨씬 이해하기 쉽다. 
+결과 리스트와 연동하는 부분이 모두 사라져서 훨씬 이해하기 쉽다. 결과는 리스트가 아닌 `yield` 표현식으로 전달된다. 제너레이터 호출로 반환되는 이터레이터를 내장 함수 `list`에 전달하면 손쉽게 리스트로 변환할 수 있다.
+
+```python
+result = list(index_words_iter(address))
+```
+
+`index_words`의 두 번째 문제는 반환하기 전에 모든 결과를 리스트에 저장해야 한다는 점이다. 입력이 매우 많다면 프로그램 실행 중에 메모리가 고갈되어 동작을 멈추는 원인이 된다. 반면에 제너레이터로 작성한 버전은 다양한 길이의 입력에도 쉽게 이용할 수 있다.
+
+다음은 파일에서 입력을 한번에 한 줄씩 읽어서 한 번에 한 단어씩 출력을 내어주는 제너레이터다. 이 함수가 동작할 때 사용하는 메모리는 입력 한 줄의 최대 길이까지다.
+
+```python
+def index_file(handle):
+    offset = 0
+    for line in handle:
+        if line:
+            yield offset
+        for letter in line:
+            offset += 1
+            if letter == ' ':
+                yield offset
+```
+
+이 제너레이터를 실행하면 앞에서 본 예제와 같은 결과가 나온다.
+
+```python
+with open('/tmp/address.txt', 'r') as f:
+    it = index_file(f)
+    results = islice(it, 0, 3)
+    print(list(results))
+
+>>>
+[0, 5, 11]
+```
