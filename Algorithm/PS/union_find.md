@@ -77,8 +77,48 @@ u의 노드가 있는 트리와 v의 노드가 있는 트리를 합친다고 생
 2. Union 연산의 시간 복잡도
    - $O(\log N)$
 
+사실 아주 정확하게 말하자면 find 연산은 호출할 때 마다 수행 시간이 변한다. 따라서 매우 까다로운 시간 복잡도를 가지고 있는데... 그냥 저렇게 생각하도록 하자. (궁금하다면 아래 refernce 참고)
 
 
+# 문제를 풀어보자
+
+1. 대표격인 문제 : 백준 1717
+
+```python
+def find(target):
+    if target == parent[target]:
+        return target
+    else:
+        parent[target] = find(parent[target])
+        return parent[target]
+
+def union(a, b):
+    a = find(a)
+    b = find(b)
+    if a < b:
+        parent[b] = a
+    else:
+        parent[a] = b
+
+n, m = list(map(int, input().split()))
+
+parent = [i for i in range(n+1)]
+
+for _ in range(m):
+    flag, a, b = map(int, input().split())
+    if flag:
+        if find(a) == find(b):
+            print("YES")
+        else:
+            print("NO")
+    else:
+        union(a, b)
+```
+
+> 참고해볼만한 문제 
+
+- [프로그래머스 - 카카오 겨울 인턴쉽 문제 : 호텔 방 배정](https://programmers.co.kr/learn/courses/30/lessons/64063)
+- [LeetCode 721. Accounts Merge](https://leetcode.com/problems/accounts-merge/)
 
 ---
 
