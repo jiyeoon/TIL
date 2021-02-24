@@ -282,3 +282,4 @@ dmypy.json
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,vscode,pycharm,git
+Hands_On_Machine_Learning/my_mnist.data
