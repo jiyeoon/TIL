@@ -1,5 +1,4 @@
 import argparse
-from sol import solution
 import logging
 
 logger = logging.getLogger('my')
