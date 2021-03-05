@@ -22,7 +22,6 @@ class Solution:
                     index = i
             return index
         
-        #dijkstra
         def dijkstra(start):
             nonlocal visited, distance, graph
             visited[start] = 1
