@@ -1,4 +1,5 @@
 from collections import defaultdict
+
 INF = int(1e9)
 class Solution:
     def networkDelayTime(self, times: List[List[int]], n: int, k: int) -> int:
