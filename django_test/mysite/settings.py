@@ -25,7 +25,7 @@ SECRET_KEY = '=832mw02^bc=ay$cb&li!=q^%xk__vhj4$towm-i$^3-!g@zi)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -121,3 +121,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# Security 관련
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+SECURE_HSTS_SECONDS = 31536000
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SESSION_COOKIE_SECURE = True
+SECURE_HSTS_PRELOAD = True
+CSRF_COOKIE_SECURE = True
