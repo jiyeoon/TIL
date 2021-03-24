@@ -121,6 +121,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+<<<<<<< HEAD
 
 # Security 관련
 X_FRAME_OPTIONS = 'SAMEORIGIN'
@@ -131,3 +132,5 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SESSION_COOKIE_SECURE = True
 SECURE_HSTS_PRELOAD = True
 CSRF_COOKIE_SECURE = True
+=======
+>>>>>>> 30298d598aa6923e11dd8b08567fe432fdad1f89
