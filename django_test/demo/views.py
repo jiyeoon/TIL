@@ -6,3 +6,6 @@ def base(request):
 
 def sidebar(request):
     return render(request, 'demo/base.html', {})
+
+def left(request):
+    return render(request, 'demo/base.html', {})
