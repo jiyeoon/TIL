@@ -4,8 +4,6 @@ from django.shortcuts import render
 def base(request):
     return render(request, 'demo/base.html', {})
 
-def sidebar(request):
-    return render(request, 'demo/base.html', {})
 
 def left(request):
     return render(request, 'demo/base.html', {})
