@@ -17,6 +17,13 @@
 
 위 두 조건이 성립되어야만 greedy에서는 최적의 해를 보장한다.
 
+## 대표적인 그리디 알고리즘들
+
+- Dijkstra's Shortest Path
+- Kruskal's Minimum Spanning Tree (MST)
+- Prim's Minimum Spanning Tree
+- Huffman Coding
+
 
 ## 문제 모음집
 
