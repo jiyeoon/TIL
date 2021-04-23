@@ -28,6 +28,12 @@ graph = [[] for _ in range(3)]
 graph[0].append((1, 7)) # 0번 노드는 1번 노드와 7의 거리로 연결되어 있다는 뜻
 ````
 
+## Traversal
+
+- Preorder
+- Inorder
+- Postorder
+
 
 
 ## BFS 
