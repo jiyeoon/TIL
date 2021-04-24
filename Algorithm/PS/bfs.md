@@ -26,14 +26,18 @@ graph = [
 ```python
 graph = [[] for _ in range(3)]
 graph[0].append((1, 7)) # 0번 노드는 1번 노드와 7의 거리로 연결되어 있다는 뜻
-````
+```
 
-## Traversal
+## 여러가지 트리 순회 알골즘
 
-- Preorder
-- Inorder
-- Postorder
-
+1. 전위 순회 (preorder)
+    - 현재 노드 -> 왼쪽 트리 -> 오른쪽 트리 순서대로 방문하는 방법.
+2. 중위 순회 (Inorder)
+    - 왼쪽 트리 -> 현재 노드 -> 오른쪽 트리 순서대로 방문하는 방법
+3. 후위 순회 (Postorder)
+    - 왼쪽 트리 -> 오른쪽 트리 -> 현재 노드 순서대로 방문하는 방법
+4. 레벨 순서 순회 (level-order)
+    - 모든 노드를 낮은 레벨부터 차례대로 순회. (=BFS)
 
 
 ## BFS 
