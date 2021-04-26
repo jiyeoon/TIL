@@ -30,7 +30,7 @@ graph[0].append((1, 7)) # 0번 노드는 1번 노드와 7의 거리로 연결되
 
 ## 여러가지 트리 순회 알고리즘
 
-![img]()
+![img](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbIDSTw%2Fbtq3hnrPpgQ%2FjGpx6PvM60CtpKO23NeI21%2Fimg.png)
 
 1. 전위 순회 (preorder)
     - 현재 노드 -> 왼쪽 트리 -> 오른쪽 트리 순서대로 방문하는 방법.
