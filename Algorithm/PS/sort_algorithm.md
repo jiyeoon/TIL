@@ -191,6 +191,22 @@ def partition(arr, left, right):
     return i
 ```
 
+더 쉽게..
+
+```python
+def quick_sort(arr):
+    pivot = arr[len(arr)//2]
+    less_arr, equal_arr, greater_arr = [], [], []
+    for i in arr:
+        if i < pivot:
+            less_arr.append(i)
+        elif i > pivot:
+            greater_arr.append(i)
+        else:
+            equal_arr.append(i)
+    return quick_sort(less_arr) + equal_arr + quick_sort(greater_arr)
+```
+
 ### 시간복잡도
 
 1. 최선의 경우(Best cases) : T(n) = O(nlog₂n)
