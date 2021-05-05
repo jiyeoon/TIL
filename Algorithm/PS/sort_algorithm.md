@@ -191,7 +191,7 @@ def partition(arr, left, right):
     return i
 ```
 
-더 쉽게..
+더 쉽게...
 
 ```python
 def quick_sort(arr):
