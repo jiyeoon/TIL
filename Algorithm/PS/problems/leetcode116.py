@@ -8,8 +8,7 @@ class Node:
         self.left = left # Node
         self.right = right
         self.next = next
-"""
-        
+"""     
 class Solution:
     def connect(self, root):
         if not root or not root.left:
