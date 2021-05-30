@@ -15,3 +15,5 @@
     - `adb shell chmod +x FILE` : 파일을 실행 가능하게 권한 변경
 - `adb push FROM TO` : 컴퓨터에의 파일 FROM을 TO로 이동
 - `adb shell ./...` : 파일 실행.
+
+- 
