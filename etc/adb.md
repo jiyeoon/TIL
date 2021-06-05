@@ -16,4 +16,8 @@
 - `adb push FROM TO` : 컴퓨터에의 파일 FROM을 TO로 이동
 - `adb shell ./...` : 파일 실행.
 
-- 
+# 최신 안드로이드 폰에서 usb 디버깅 설정하는 방법
+
+<https://m.blog.naver.com/dsmobile3550/221299587135>
+
+이걸로 해결했다... 후후 -v-
