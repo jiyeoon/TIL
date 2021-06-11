@@ -13,3 +13,24 @@
 - Fine-tuning이 필요한 다른 하이퍼파라미터가 필요하다
 - 배치 사이즈가 작을 경우 성능이 저하된다.
 - 분산학습에서 구현 에러를 일으킨다
+
+
+## Adaptive Gradient Clipping
+
+Gradient Clipping은 NLP에서 안정화를 위해 많이 사용되는 것 중 하나로, 쉽게 말해 기울기(gradient)가 특정 임계값을 초과하지 않도록 하여 모델 학습을 안정화하는 방법입니다. 최근에는 gradeint descent에 비해 더 높은 learning rate에서도 더 빠른 수렴(covergence)를 보여주는 논문들이 등장했었습니다. 그래서 해당 논문에서는 이를 잘 활용하는 방안으로 **Adaptive Gradient Clipping(AGC)** 를 도입하게 됩니다. 
+
+
+
+
+
+
+## 파이토치 구현 코드
+
+<https://github.com/rwightman/pytorch-image-models/blob/master/timm/models/nfnet.py>
+
+
+
+> References
+
+- <https://wikidocs.net/61375>
+- <https://github.com/deepmind/deepmind-research/tree/master/nfnets>
