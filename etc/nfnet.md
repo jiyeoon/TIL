@@ -34,3 +34,4 @@ Gradient Clipping은 NLP에서 안정화를 위해 많이 사용되는 것 중 �
 
 - <https://wikidocs.net/61375>
 - <https://github.com/deepmind/deepmind-research/tree/master/nfnets>
+- - 
