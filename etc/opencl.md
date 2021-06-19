@@ -117,3 +117,8 @@ cc_binary(
 
 ```
 
+### Build Start.. 
+
+```bash
+$ bazel -c 
+```
