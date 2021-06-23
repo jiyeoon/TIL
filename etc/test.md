@@ -19,3 +19,17 @@ with open('conv2d.tflite', 'wb') as f:
     f.write(tflite_model) 
 ```
 
+여기까지는 성공! 
+
+## 2. Conv2D의 파라미터를 알아보자.
+
+Convolution 2D에는 여러가지 파라미터가 있는데, 쉽게 알 수 있는 것을 알아보자면
+
+- padding size (HxW)
+- input/output tensor size
+- stride (HxW)
+- kernel size (HxW)
+- dilation size (HxW)
+
+이것들을 어떻게 알 수 있을까! 알아봐야겠당.
+
