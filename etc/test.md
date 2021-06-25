@@ -25,11 +25,19 @@ with open('conv2d.tflite', 'wb') as f:
 
 Convolution 2D에는 여러가지 파라미터가 있는데, 쉽게 알 수 있는 것을 알아보자면
 
-- padding size (HxW)
-- input/output tensor size
-- stride (HxW)
-- kernel size (HxW)
-- dilation size (HxW)
+- [ ] padding size (HxW)
+- [x] input/output tensor size
+- [ ] stride (HxW)
+- [x] kernel size (HxW)
+- [ ] dilation size (HxW)
 
 이것들을 어떻게 알 수 있을까! 알아봐야겠당.
 
+**I got this!**
+
+[Github - tflite-support](https://github.com/tensorflow/tflite-support)
+
+여기에서 아마 조금 좋은 아이디어를 알 수 있을 것 같다!
+(아니 근데 왜 netron에서는 꽁꽁 숨겨놓음 -_-;; 짜증...은 아니고 감사하긴 하지만 어떻게 알아보냐고요~~)
+
+- 질문 올림... : <https://stackoverflow.com/questions/68105252/how-can-i-know-conv2d-parameters-inside-tflite-model-using-python>
