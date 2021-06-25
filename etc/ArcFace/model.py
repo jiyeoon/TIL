@@ -14,7 +14,7 @@ eca_nf_net10 : https://huggingface.co/timm/eca_nfnet_l0
 class NFNetModel(nn.Module):
     def __init__(self, channel_size, out_features, dropout=0.5, backbone='resnet'):
         super(NFNetModel, self).__init__()
-        self.base_model = timm.create_model("hf_hub:timm/eca_nfnet_10")
+        self.base_model = timm.create_model("eca_nfnet_l0", pretrained=True)
         self.channel_size = channel_size
         self.out_features = out_features
         self.in_features = self.base_model.classifier.in_features
