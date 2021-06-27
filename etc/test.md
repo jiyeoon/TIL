@@ -41,3 +41,5 @@ Convolution 2D에는 여러가지 파라미터가 있는데, 쉽게 알 수 있�
 (아니 근데 왜 netron에서는 꽁꽁 숨겨놓음 -_-;; 짜증...은 아니고 감사하긴 하지만 어떻게 알아보냐고요~~)
 
 - 질문 올림... : <https://stackoverflow.com/questions/68105252/how-can-i-know-conv2d-parameters-inside-tflite-model-using-python>
+
+답변 달렸낭
