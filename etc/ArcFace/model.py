@@ -11,6 +11,7 @@ from  .arcface import ArcFaceLayer
 eca_nf_net10 : https://huggingface.co/timm/eca_nfnet_l0
 """
 
+
 class NFNetModel(nn.Module):
     def __init__(self, channel_size, out_features, dropout=0.5, backbone='resnet'):
         super(NFNetModel, self).__init__()
