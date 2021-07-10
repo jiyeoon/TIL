@@ -140,3 +140,4 @@ class Img2Vec_CUDA():
 
         else:
             raise KeyError('Model %s was not found' % model_name)
+        
