@@ -14,7 +14,7 @@ class Img2Vec():
         self.transform = self._get_transform()
     
     
-    def get_vec(self, img): # img is PIL type
+    def get_vec(self, img): # img : PIL type
         input_tensor = self.transform(img).unsqueeze(0)
         #input_numpy = input_tensor.numpy()
         with torch.no_grad():
@@ -23,7 +23,7 @@ class Img2Vec():
         return output_vec_np
     
     
-    def get_vec_bulk(self, img_list): # img is PIL image list
+    def get_vec_bulk(self, img_list): # img_list : PIL image list
         input_tensor_list = [self.transform(img).unsqueeze(0) for img in img_list]
         #input_numpy_list = [input_tensor.numpy() for input_tensor in input_tensor_list]
         output_vec_list = []
@@ -47,6 +47,7 @@ class Img2Vec():
             std = self.config['std'],
             crop_pct = self.config['crop_pct']
         )
+        
 
 
 '''
