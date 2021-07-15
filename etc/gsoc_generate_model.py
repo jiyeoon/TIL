@@ -18,9 +18,20 @@ def run_bazel(model_name):
 
 ##################### MODEL GENERATION + RUN BENCHMARK #####################
 
+"""
 kernel_list = [2*i for i in range(10)]
 filter_list = [2**i for i in range(4, 8)]
 input_img_list = [(i, i, 3) for i in range(32, 512)]
+"""
+kernel_list = [1, 3, 5]
+filter_list = [16, 32, 64]
+input_hw = [8, 16, 32, 64]
+input_channels = [16, 32, 48]
+input_img_list = []
+for hw in input_hw:
+    for ch in input_channels:
+        input_img_list.append((ch, hw, hw))
+
 
 comb = list(product(kernel_list, filter_list, input_img_list)) # combination
 
