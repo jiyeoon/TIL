@@ -11,3 +11,4 @@ For many algorithms, it is possible to work how efficient they are out at a glan
 A highly efficient algorithm like Binary Search might have a performance of O(logN), while a horrendously inefficient algorithm like Bogosort might have a performance of O(log(N!)).
 If this all looks unfamiliar, don’t worry. I’ll introduce the necessary details one-by-one. This article is intended for beginners, but it also goes a deeper than any other article for beginners that I have encountered. That’s because, in this article, we’ll not only cover the theory of Big O Notation, but we’ll also look at several well-known searching/sorting algorithms in context of Big O Notation, and what the code for those algorithms might look like.
 
+ㅇㄹ
