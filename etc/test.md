@@ -43,3 +43,4 @@ Convolution 2D에는 여러가지 파라미터가 있는데, 쉽게 알 수 있�
 - 질문 올림... : <https://stackoverflow.com/questions/68105252/how-can-i-know-conv2d-parameters-inside-tflite-model-using-python>
 
 - 답변 달림..
+
