@@ -30,7 +30,7 @@ class ArcFaceLayer(nn.Module):
         cond = cond_v <= 0
         cos_th_m[cond] = (cos_th - self.mm)[cond]
         
-        if label.dims() == 1:
+        if labels.dims() == 1:
             labels = labels.unsqueeze(-1)
         one_hot = torch.zeros(cos_th.size()).cuda()
         labels = labels.type(torch.LongTensor).cuda()
