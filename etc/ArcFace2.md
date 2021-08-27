@@ -168,4 +168,3 @@ class ArcFace(Layer):
 > Reference
 
 - <https://www.kaggle.com/chankhavu/keras-layers-arcface-cosface-adacos>
-- <>
