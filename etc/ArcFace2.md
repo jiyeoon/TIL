@@ -161,7 +161,7 @@ class ArcFace(Layer):
 
 논문에서 가장 많이 언급되는 비율에 관한 그래프인데요, Triplet Loss가 압도적이고 ArcFace도 점차 늘어나는 추세인 것 같습니다. 잘 알아두면 좋을 것 같은 ArcFace... ^^... 높은 성능의 face recognition 혹은 multi-class classification을 할 때 사용하면 좋을 것 같네요.
 
-내마음대로 논문리뷰 제목처럼 너무 제마음대로 리뷰였지만,,, ㅎㅎ 이만 마치도록 하겠습니다~!
+내마음대로 논문리뷰 제목처럼 너무 제마음대로 리뷰였지만 ㅎㅎ 이만 마치도록 하겠습니다~!
 
 
 > Reference
