@@ -38,4 +38,3 @@ class ArcFaceLayer(nn.Module):
         outputs = one_hot * cos_th_m + (1.0 - one_hot) * cos_th
         outputs = outputs * self.s
         return outputs
-    
