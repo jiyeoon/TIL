@@ -7,6 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.dates import MonthLocator, num2date
 from matplotlib.ticker import FuncFormatter
+from prophet.plot import add_changepoints_to_plot
 
 from sklearn.metrics import r2_score, mean_squared_error
 
@@ -14,19 +15,32 @@ from prophet import Prophet
 
 
 class Prpht():
-    def __init__(self, file_path, price_norm=True, price_max=None, holiday_weight=10, price_weight=10, PRC=True, IQR=True, START_DATE=None, END_DATE=None, PRED_DAYS=7):
+    def __init__(self, file_path, price_norm=True, 
+                 price_max=100, changepoint_range = 0.8,
+                 holiday_weight=10, price_weight=10, seasonality_weight=1, changepoint_weight = 0.05,
+                 HOLIDAY_EVENT=True, OUTLIER_HANDLE=True, PRC=True, IQR=False, 
+                 ADD_COUNTRY_HOLIDAY=True, ADD_MONTHLY_SEASONALITY=True,
+                 START_DATE=None, END_DATE=None, PRED_DAYS=7):
         self.file_path = file_path
         self.start_date = START_DATE
         self.end_date = END_DATE
         self.IQR = IQR
         self.PRC = PRC
         self.PRED_DAYS = PRED_DAYS
+        self.HOLDAY_EVENT = HOLIDAY_EVENT
+        self.OUTLIER_HANDLE = OUTLIER_HANDLE
+        self.ADD_COUNTRY_HOLIDAY = ADD_COUNTRY_HOLIDAY
+        self.ADD_MONTHLY_SEASONALITY = ADD_MONTHLY_SEASONALITY
+
         self.prd_no = file_path.split('/')[-1].split('_')[0]
         self.holiday_weight = holiday_weight
         self.price_weight = price_weight
+        self.changepoint_range = changepoint_range
+        self.seasonality_weight = seasonality_weight
+        self.changepoint_weight = changepoint_weight
+        
         self.price_norm = price_norm
         self.price_max = price_max
-
         
         self.data = self.get_data()
         self.holidays = self._get_holiday()
@@ -40,8 +54,10 @@ class Prpht():
         
     def get_data(self):
         df = pd.read_csv(self.file_path)
+        
         self.start_date = df.iloc[0]['dt'] if not self.start_date else self.start_date
         self.end_date = df.iloc[len(df)-1]['dt'] if not self.end_date else self.end_date
+        
         date_range = pd.date_range(start=self.start_date, end=self.end_date)
         df['ds'] = pd.to_datetime(df['dt'])
         df = df.set_index('ds')
@@ -60,15 +76,17 @@ class Prpht():
         # min-max
         df['y'] = (df.y - df.y.min()) / (df.y.max() - df.y.min())
         df['y'] = df['y'] * 100
-        if self.price_norm:
+        if self.price_norm == True:
             df['avg_prc'] = df.avg_prc / df.avg_prc.max()
-            if self.price_max:
+            if self.price_max != None:
                 df['avg_prc'] = df['avg_prc'] * self.price_max
         
         df = df[['ds', 'y', 'avg_prc']]
+        missing_fill_val = {'avg_prc' : df.avg_prc.median(), 'y': 0.0}
+        df.fillna(missing_fill_val, inplace=True)
         df['floor'] = 0.0
-        df['cap'] = df['y'].max()
-        
+        df['cap'] = 100
+                
         return df
         
     
@@ -76,8 +94,16 @@ class Prpht():
         train, test = self.data[:-self.PRED_DAYS], self.data[-self.PRED_DAYS:]
         model = Prophet(growth='logistic',
                         holidays=self.holidays,
-                        holidays_prior_scale=self.holiday_weight
+                        holidays_prior_scale=self.holiday_weight,
+                        seasonality_prior_scale=self.seasonality_weight,
+                        changepoint_prior_scale=self.changepoint_weight,
+                        changepoint_range=self.changepoint_range,
                 )
+        
+        if self.ADD_COUNTRY_HOLIDAY:
+            model.add_country_holidays(country_name='KR')
+        if self.ADD_MONTHLY_SEASONALITY:
+            model.add_seasonality(name='montly_seasonality', period=30.5, fourier_order=5)
         
         if self.PRC:
             model.add_regressor('avg_prc', prior_scale=self.price_weight, standardize=False)    
@@ -107,20 +133,22 @@ class Prpht():
     
     def get_r2score(self):
         return r2_score(self.data[-self.PRED_DAYS:]['y'], self.pred['yhat'])
+    
+    def get_rmsse(self):
+        return self.rmse / (self._get_rmsse_under() * self.PRED_DAYS)
             
     
     def draw_case(self):
         fig, ax = plt.subplots(figsize=(12, 5))
-        #fig = plt.figure(figsize=(12, 5))
-        #ax = fig.subplots()
-        self.model.plot(self.forecast, ax=ax)
+        fig = self.model.plot(self.forecast, ax=ax)
+        a = add_changepoints_to_plot(fig.gca(), self.model, self.forecast)
         ax.set_ylabel('sales')
         ax2 = ax.twinx()
         ax2.set_ylabel('scaled_price')
         plt.plot(self.data.ds, self.data.avg_prc, color='deeppink', label='price')
         plt.legend()
-        plt.title('IQR : {}, PRC : {} \n RMSE : {}, R2_SCORE : {}'.format(self.IQR, self.PRC, self.rmse, self.r2score))        
-        
+        plt.title('PRD_NO : {} \nIQR : {}, PRC : {} \n RMSE : {}, R2_SCORE : {}'.format(self.prd_no, self.IQR, self.PRC, self.rmse, self.r2score))        
+    
         
     def _get_holiday(self):
         # 십일절
@@ -146,7 +174,33 @@ class Prpht():
             'upper_window' : 2
         }
         
-        return pd.concat([pd.DataFrame(day11), pd.DataFrame(new_years_day), pd.DataFrame(chusuck)])
+        holidays = [pd.DataFrame(day11), pd.DataFrame(new_years_day), pd.DataFrame(chusuck)]
+        if self.OUTLIER_HANDLE:
+            outlier = self._get_outlier()
+            holidays.append(outlier)
         
+        return pd.concat(holidays)
     
     
+    def _get_rmsse_under(self):
+        n = len(self.data[:-self.PRED_DAYS])
+        a = np.array(self.data['y'][:-self.PRED_DAYS-1])
+        b = np.array(self.data['y'][1:-self.PRED_DAYS])
+        return np.sum((b-a) ** 2) / n-1
+    
+    
+    def _get_outlier(self):
+        q3 = self.data['y'].quantile(q=0.75)
+        iqr = self.data['y'].quantile(q=0.75) - self.data['y'].quantile(q=0.25)
+        thrshd = q3 + (1.5 * iqr)
+        df = self.data[self.data.y > thrshd]
+        ds = df.ds.values
+        
+        data = {
+            'holiday' : 'outlier',
+            'ds' : ds,
+            'lower_window' : 0,
+            'upper_window' : 1
+        }
+        
+        return pd.DataFrame(data)
