@@ -8,4 +8,4 @@ while True:
     pag.moveRel(n, 0)
     time.sleep(1)
     
-    
+     
