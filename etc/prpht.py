@@ -15,11 +15,12 @@ from prophet import Prophet
 
 
 class Prpht():
-    def __init__(self, file_path, price_norm=True, 
-                 price_max=100, changepoint_range = 0.8,
+    def __init__(self, file_path, price_norm=True, sales_norm=True,
+                 price_max=100, changepoint_range = 0.8, changepoints = [],
                  holiday_weight=10, price_weight=10, seasonality_weight=1, changepoint_weight = 0.05,
                  HOLIDAY_EVENT=True, OUTLIER_HANDLE=True, PRC=True, IQR=False, 
-                 ADD_COUNTRY_HOLIDAY=True, ADD_MONTHLY_SEASONALITY=True,
+                 ADD_COUNTRY_HOLIDAY=True, ADD_MONTHLY_SEASONALITY=True, ADD_CHANGE_POINT=True,
+                 DARW_CHANGEPOINT = True,
                  START_DATE=None, END_DATE=None, PRED_DAYS=7):
         self.file_path = file_path
         self.start_date = START_DATE
@@ -31,15 +32,19 @@ class Prpht():
         self.OUTLIER_HANDLE = OUTLIER_HANDLE
         self.ADD_COUNTRY_HOLIDAY = ADD_COUNTRY_HOLIDAY
         self.ADD_MONTHLY_SEASONALITY = ADD_MONTHLY_SEASONALITY
+        self.ADD_CHANGE_POINT = ADD_CHANGE_POINT
+        self.DRAW_CHANGEPOINT = DARW_CHANGEPOINT
 
         self.prd_no = file_path.split('/')[-1].split('_')[0]
         self.holiday_weight = holiday_weight
         self.price_weight = price_weight
+        self.changepoints = changepoints
         self.changepoint_range = changepoint_range
         self.seasonality_weight = seasonality_weight
         self.changepoint_weight = changepoint_weight
         
         self.price_norm = price_norm
+        self.sales_norm = sales_norm
         self.price_max = price_max
         
         self.data = self.get_data()
@@ -49,6 +54,8 @@ class Prpht():
         
         self.rmse = self.get_rmse()
         self.r2score = self.get_r2score()
+        
+        self.y_max = 0
         
         
         
@@ -67,15 +74,14 @@ class Prpht():
         missing_fill_val = {'avg_prc' : df.avg_prc.median(), 'y': 0.0}
         df.fillna(missing_fill_val, inplace=True)
         
+        # min-max
+        df['y'] = df.y / df.y.max() * 100
+        self.y_max = df.y.max()
         if self.IQR:
             q3 = df['y'].quantile(q=0.75)
             iqr = df['y'].quantile(q=0.75) - df['y'].quantile(q=0.25)
             maximum = q3 + 1.5 * iqr
             df['y'] = df['y'].apply(lambda x : maximum if x >= maximum else x)
-        
-        # min-max
-        df['y'] = (df.y - df.y.min()) / (df.y.max() - df.y.min())
-        df['y'] = df['y'] * 100
         if self.price_norm == True:
             df['avg_prc'] = df.avg_prc / df.avg_prc.max()
             if self.price_max != None:
@@ -98,6 +104,7 @@ class Prpht():
                         seasonality_prior_scale=self.seasonality_weight,
                         changepoint_prior_scale=self.changepoint_weight,
                         changepoint_range=self.changepoint_range,
+                        changepoints=self.changepoints if self.changepoints else None,
                 )
         
         if self.ADD_COUNTRY_HOLIDAY:
@@ -141,7 +148,8 @@ class Prpht():
     def draw_case(self):
         fig, ax = plt.subplots(figsize=(12, 5))
         fig = self.model.plot(self.forecast, ax=ax)
-        a = add_changepoints_to_plot(fig.gca(), self.model, self.forecast)
+        if self.DRAW_CHANGEPOINT:
+            a = add_changepoints_to_plot(fig.gca(), self.model, self.forecast)
         ax.set_ylabel('sales')
         ax2 = ax.twinx()
         ax2.set_ylabel('scaled_price')
@@ -156,9 +164,8 @@ class Prpht():
             'holiday' : '11day',
             'ds' : ['20{}-{}-11'.format(i, j) for i in range(19, 22) for j in range(1, 13)],
             'lower_window' : 0,
-            'upper_window' : 1,
+            'upper_window' : 0,
         }
-        
         # 설날
         new_years_day = {
             'holiday' : '설날',
@@ -166,7 +173,6 @@ class Prpht():
             'lower_window' : -2,
             'upper_window' : 2
         }
-        
         chusuck = {
             'holiday' : '추석',
             'ds' : ['2020-10-01', '2021-09-12'],
@@ -195,7 +201,6 @@ class Prpht():
         thrshd = q3 + (1.5 * iqr)
         df = self.data[self.data.y > thrshd]
         ds = df.ds.values
-        
         data = {
             'holiday' : 'outlier',
             'ds' : ds,
@@ -204,3 +209,68 @@ class Prpht():
         }
         
         return pd.DataFrame(data)
+    
+    def _get_changepoint(self):
+        # todo
+        change_points = []
+        count = 0
+        i = 0
+        while i < len(self.data[:-self.PRED_DAYS]):
+            if self.data.iloc[i]['y'] == 0:
+                curr_date = self.data.iloc[i]['ds']
+                count += 1
+                i += 1
+                while i < len(self.data[:-self.PRED_DAYS]):
+                    if self.data.iloc[i]['y'] == 0:
+                        count += 1
+                        if count == 3:
+                            change_points.append(curr_date)
+                    else:
+                        if count >= 3:
+                            end_date = self.data.iloc[i]['ds']
+                            change_points.append(end_date)
+                        count = 0
+                        break
+                    i += 1
+            else:
+                count = 0
+            i += 1
+        
+        if self.changepoints:
+            change_points.extend(self.changepoints)
+                        
+        return change_points
+    
+    def get_raw_rmse(self, history=False): # sales : sales / max * 100
+        targets = self.data['y'] if history else self.data[-self.PRED_DAYS:]['y']
+        predictions = self.forecast['yhat'] if history else self.pred['yhat']
+        
+        targets = targets * self.y_max / 100 
+        predictions = predictions * self.y_max / 100
+        
+        return np.sqrt(np.mean((predictions - targets) ** 2))
+    
+    def get_raw_rmsse(self, history=False):
+        n = len(self.data)
+        tmp = self.data['y'] * self.y_max / 100
+        a = np.array(tmp[:-1])
+        b = np.array(tmp[1:])
+        under = np.sum((b-a)**2) / n-1
+        rmsse = self.get_raw_rmse() / under * self.PRED_DAYS
+
+        return rmsse
+
+    def get_raw_r2score(self, history=False):
+        targets = self.data['y'] if history else self.data[-self.PRED_DAYS:]['y']
+        predictions = self.forecast['yhat'] if history else self.pred['yhat']
+        
+        targets = targets * self.y_max / 100
+        predictions = predictions * self.y_max / 100
+        
+        mean = np.mean(targets)
+        SST = np.sum(np.square(targets - mean))
+        SSR = np.sum(np.square(targets - predictions))
+        r2score = 1 - (SSR/SST)
+        return r2score
+        
+        
