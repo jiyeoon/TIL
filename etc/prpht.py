@@ -272,5 +272,7 @@ class Prpht():
         SSR = np.sum(np.square(targets - predictions))
         r2score = 1 - (SSR/SST)
         return r2score
+    
+    
         
         
