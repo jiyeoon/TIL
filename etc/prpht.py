@@ -273,4 +273,3 @@ class Prpht():
         r2score = 1 - (SSR/SST)
         return r2score
     
-    
