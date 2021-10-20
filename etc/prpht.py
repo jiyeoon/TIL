@@ -20,7 +20,7 @@ class Prpht():
                  holiday_weight=10, price_weight=10, seasonality_weight=1, changepoint_weight = 0.05,
                  HOLIDAY_EVENT=True, OUTLIER_HANDLE=True, PRC=True, IQR=False, 
                  ADD_COUNTRY_HOLIDAY=True, ADD_MONTHLY_SEASONALITY=True, ADD_CHANGE_POINT=True,
-                 DARW_CHANGEPOINT = True,
+                 DARW_CHANGEPOINT = True, SQRT_TRANSFORM=False,
                  START_DATE=None, END_DATE=None, PRED_DAYS=7):
         self.file_path = file_path
         self.start_date = START_DATE
@@ -34,6 +34,7 @@ class Prpht():
         self.ADD_MONTHLY_SEASONALITY = ADD_MONTHLY_SEASONALITY
         self.ADD_CHANGE_POINT = ADD_CHANGE_POINT
         self.DRAW_CHANGEPOINT = DARW_CHANGEPOINT
+        self.SQRT_TRANSFORM = SQRT_TRANSFORM
 
         self.prd_no = file_path.split('/')[-1].split('_')[0]
         self.holiday_weight = holiday_weight
@@ -54,9 +55,7 @@ class Prpht():
         
         self.rmse = self.get_rmse()
         self.r2score = self.get_r2score()
-        
-        self.y_max = 0
-        
+                
         
         
     def get_data(self):
@@ -75,8 +74,11 @@ class Prpht():
         df.fillna(missing_fill_val, inplace=True)
         
         # min-max
-        df['y'] = df.y / df.y.max() * 100
         self.y_max = df.y.max()
+        if self.SQRT_TRANSFORM:
+            df['y'] = np.sqrt(df.y)
+        else:
+            df['y'] = df.y / df.y.max() * 100
         if self.IQR:
             q3 = df['y'].quantile(q=0.75)
             iqr = df['y'].quantile(q=0.75) - df['y'].quantile(q=0.25)
@@ -155,7 +157,7 @@ class Prpht():
         ax2.set_ylabel('scaled_price')
         plt.plot(self.data.ds, self.data.avg_prc, color='deeppink', label='price')
         plt.legend()
-        plt.title('PRD_NO : {} \nIQR : {}, PRC : {} \n RMSE : {}, R2_SCORE : {}'.format(self.prd_no, self.IQR, self.PRC, self.rmse, self.r2score))        
+        plt.title('PRD_NO : {} \nIQR : {}, PRC : {}, y_max : {} \n RMSE : {}, R2_SCORE : {}'.format(self.prd_no, self.IQR, self.PRC, self.y_max, self.rmse, self.r2score))        
     
         
     def _get_holiday(self):
@@ -245,14 +247,21 @@ class Prpht():
         targets = self.data['y'] if history else self.data[-self.PRED_DAYS:]['y']
         predictions = self.forecast['yhat'] if history else self.pred['yhat']
         
-        targets = targets * self.y_max / 100 
-        predictions = predictions * self.y_max / 100
+        if self.SQRT_TRANSFORM:
+            targets = targets ** 2
+            predictions = predictions ** 2
+        else:
+            targets = targets * self.y_max / 100 
+            predictions = predictions * self.y_max / 100
         
-        return np.sqrt(np.mean((predictions - targets) ** 2))
+        return math.sqrt(mean_squared_error(targets, predictions))
     
     def get_raw_rmsse(self, history=False):
         n = len(self.data)
-        tmp = self.data['y'] * self.y_max / 100
+        if self.SQRT_TRANSFORM:
+            tmp = self.data['y'] ** 2
+        else:
+            tmp = self.data['y'] * self.y_max / 100
         a = np.array(tmp[:-1])
         b = np.array(tmp[1:])
         under = np.sum((b-a)**2) / n-1
@@ -264,12 +273,15 @@ class Prpht():
         targets = self.data['y'] if history else self.data[-self.PRED_DAYS:]['y']
         predictions = self.forecast['yhat'] if history else self.pred['yhat']
         
-        targets = targets * self.y_max / 100
-        predictions = predictions * self.y_max / 100
+        if self.SQRT_TRANSFORM:
+            targets = targets ** 2
+            predictions = predictions ** 2
+        else:
+            targets = targets * self.y_max / 100
+            predictions = predictions * self.y_max / 100
         
-        mean = np.mean(targets)
-        SST = np.sum(np.square(targets - mean))
-        SSR = np.sum(np.square(targets - predictions))
-        r2score = 1 - (SSR/SST)
+        r2score = r2_score(targets, predictions)
+        
         return r2score
-    
+        
+        
