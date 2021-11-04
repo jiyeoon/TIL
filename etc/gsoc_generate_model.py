@@ -65,16 +65,3 @@ for com in comb:
 # save to csv
 df = pd.DataFrame(data_frame)
 df.to_csv('./resutl.csv')
-
-
-'''
-1. 쿄드 정리하고
-2. 리뷰
-3. 코드 깃허브에 올리기
-
-1. 데이터베이스 작은거 컴비네이션으로 만들기
-2. 결과 얻으면 카탸에게 공유
-3. 시간 줄이기 
-
-4. 30초정도로만 걸려야함. 
-'''
