@@ -61,7 +61,7 @@ df.groupBy('col1').sum('col2')
 df.groupBy('col1').avg('col2')
 ```
 
-groupby 연산 후 여러가지의 연산을 한 칼럼을 리턴하고 싶다면 아래와 같이 사용
+groupby 연산 후 여러가지의 연산을 한 칼럼을 리턴하고 싶다면 `agg()`화 함께 아래와 같이 사용
 
 ```python
 import pyspark.sql.functions as F
@@ -71,6 +71,17 @@ df.groupBy(['col1', 'col2']).agg(
     F.avg('col4').alias('avg_of_col4')
 )
 ```
+
+groupby 연산의 결과들을 리스트 / set으로 바꾸고 싶을때에는  `collect_list()`, `collect_set()`
+
+```python
+improt pyspark.sql.functions as F
+df.groupBy(['col1', 'col2']).agg(
+    F.collect_list('col3').alias('list_of_col3'), # ArrayType 칼럼
+    F.collect_set('col4').alias('set_of_col4') # ArrayType이나 중복 제거된 리스트
+)
+```
+
 
 ## 5. 칼럼끼리의 연산을 통해 새 칼럼 만들기 - `withColumn()`
 
