@@ -26,10 +26,10 @@ def get_model_forecast(info):
     holidays = pd.read_json(info['holidays'])
     
     ## feature engineering
-#     if data['avg_prc'].max() > 0:
-#         data['avg_prc'] = data['avg_prc'] / data['avg_prc'].max() * 100
-#     else:
-#         data['avg_prc'] = data['avg_prc'] / (data['avg_prc'].max() + 1) * 100
+    if data['avg_prc'].max() > 0:
+        data['avg_prc'] = data['avg_prc'] / data['avg_prc'].max() * 100
+    else:
+        data['avg_prc'] = data['avg_prc'] / (data['avg_prc'].max() + 1) * 100
     data['cap'] = 100.0
     data['floor'] = 0.0
     
