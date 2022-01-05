@@ -26,14 +26,24 @@ if st.button('Enter'):
     }
     
     result = pd.DataFrame(dic)
-    st.dataframe(dic)
+    result['ds'] = pd.to_datetime(result['ds'])
+    st.dataframe(result)
     
+    st.write("### 일자별 판매량 - 가격 그래프")
     fig, ax = plt.subplots()
     ax.plot(result['ds'], result['y'], label='sales', ls='-')
     ax.set_ylabel('sales')
+    plt.legend()
     ax2 = ax.twinx()
     ax2.set_ylabel('price')
     plt.plot(result['ds'], result['avg_prc'], color='deeppink', label='price')
     plt.legend()
     
+    st.write("파란색 선 : sales, 분홍색 선 : price")
     st.pyplot(fig)
+    
+    st.write("### 가격 - 판매량 관계 그래프")
+    tmp2 = result.groupby('avg_prc').sum('y')
+    st.dataframe(tmp2)
+    st.line_chart(tmp2)
+    
