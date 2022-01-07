@@ -5,10 +5,14 @@ import ast
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
+st.set_page_config(layout='wide')
 st.write("""
             # Dynamic Pricing Demo Page
-         """)
+        """)
 
 
 df = pd.read_csv('./data/ctlg_training_data_220104.csv')
@@ -26,24 +30,50 @@ if st.button('Enter'):
     }
     
     result = pd.DataFrame(dic)
+    result = result.astype({
+        '판매량' : int,
+        '가격' : int
+    })
     result['날짜'] = pd.to_datetime(result['날짜'])
-    st.dataframe(result)
+    styler = result.style.format({
+        '날짜' : lambda x : x.strftime("%Y-%m-%d"),
+        '가격' : lambda x : "{:,}".format(x)
+    })
     
-    st.write("### 일자별 판매량 - 가격 그래프")
-    fig, ax = plt.subplots()
-    ax.plot(result['날짜'], result['판매량'], label='sales', ls='-')
-    ax.set_ylabel('판매량')
-    plt.legend()
-    ax2 = ax.twinx()
-    ax2.set_ylabel('가격')
-    plt.plot(result['날짜'], result['가격'], color='deeppink', label='price')
-    plt.legend()
+    with st.container():
+        col1, col2 = st.columns([1, 3])
+        
+        col1.subheader('일자별 가격 - 판매량 그래프')
+        col1.dataframe(styler)
+        
+        fig = make_subplots(specs=[[{'secondary_y' : True}]])
+        
+        fig.add_trace(
+            go.Scatter(x=result['날짜'], y=result['판매량'],
+                    mode='lines', name='판매량'),
+            secondary_y = False,
+        )
+        
+        fig.add_trace(
+            go.Scatter(x=result['날짜'], y=result['가격'], mode='lines', name='가격'),
+            secondary_y = True
+        )
+        
+        fig.update_xaxes(title_text="날짜")
+        
+        fig.update_yaxes(title_text='판매량', secondary_y=False, tickformat='000')
+        fig.update_yaxes(title_text='가격', secondary_y=True, tickformat='000')
+        
+        col2.plotly_chart(fig, use_container_width=True)
     
-    st.write("파란색 선 : 판매량, 분홍색 선 : 가격")
-    st.pyplot(fig)
     
-    st.write("### 가격 - 판매량 관계 그래프")
-    tmp2 = result.groupby('가격').sum('판매량')
-    st.dataframe(tmp2)
-    st.line_chart(tmp2)
-    
+    ## 가격 - 판매량 관계 그래프
+    with st.container():
+        tmp2 = result.groupby('가격').sum('판매량').reset_index()
+        col1, col2 = st.columns([1, 3])
+        col1.subheader("가격 - 판매량 관계 그래프")
+        col1.dataframe(tmp2)
+        fig = px.line(tmp2, x='가격', y='판매량', markers=True)
+        fig.update_xaxes(tickformat='000')
+        col2.plotly_chart(fig, use_container_width=True)
+        
