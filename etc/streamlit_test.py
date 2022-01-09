@@ -77,3 +77,5 @@ if st.button('Enter'):
         fig.update_xaxes(tickformat='000')
         col2.plotly_chart(fig, use_container_width=True)
         
+        
+        
