@@ -15,18 +15,24 @@ st.write("""
         """)
 
 
-df = pd.read_csv('./data/ctlg_training_data_220104.csv')
+df = pd.read_pickle('./data/prd_training_data_with_ad_220107.pkl')
 #st.write(df.dtypes)
 
-ctlg_no = st.text_input('Enter catalog no', '13917540')
+prd_no = st.text_input('Enter product no', '2826341919')
 
 if st.button('Enter'):
-    tmp = df[df.ctlg_no == int(ctlg_no)]
+    tmp = df[df.prd_no == prd_no]
     info = tmp.iloc[0]
+    
+    # dic = {
+    #     '날짜' : ast.literal_eval(info['train_ds']),
+    #     '판매량' : np.square(ast.literal_eval(info['train_y'])),
+    #     '가격' : ast.literal_eval(info['train_avg_prc'])
+    # }
     dic = {
-        '날짜' : ast.literal_eval(info['train_ds']),
-        '판매량' : np.square(ast.literal_eval(info['train_y'])),
-        '가격' : ast.literal_eval(info['train_avg_prc'])
+        '날짜' : info['train_ds'],
+        '판매량' : np.square(info['train_y']),
+        '가격' : info['train_avg_prc']
     }
     
     result = pd.DataFrame(dic)
