@@ -75,12 +75,32 @@ if st.button('Enter'):
     
     ## 가격 - 판매량 관계 그래프
     with st.container():
-        tmp2 = result.groupby('가격').sum('판매량').reset_index()
+        tmp2 = result.groupby('가격').agg({'판매량' : 'sum', '날짜' : 'count'}).reset_index()
+        tmp2['판매량/날짜수'] = tmp2['판매량'] // tmp2['날짜']
+        tmp2['날짜수'] = tmp2['날짜']
+        tmp2 = tmp2[['가격', '판매량', '날짜수', '판매량/날짜수']]
         col1, col2 = st.columns([1, 3])
         col1.subheader("가격 - 판매량 관계 그래프")
         col1.dataframe(tmp2)
-        fig = px.line(tmp2, x='가격', y='판매량', markers=True)
-        fig.update_xaxes(tickformat='000')
+        
+        fig = make_subplots(specs=[[{'secondary_y' : True}]])
+        
+        fig.add_trace(
+            go.Scatter(x=tmp2['가격'], y=tmp2['판매량'],
+                    mode='lines+markers', name='판매량'),
+            secondary_y = False,
+        )
+        
+        fig.add_trace(
+            go.Scatter(x=tmp2['가격'], y=tmp2['판매량/날짜수'], mode='lines+markers', name='판매량/날짜수'),
+            secondary_y = True
+        )
+        
+        fig.update_xaxes(title_text="가격")
+        
+        fig.update_yaxes(title_text='판매량', secondary_y=False, tickformat='000')
+        fig.update_yaxes(title_text='판매량/날짜수', secondary_y=True, tickformat='000')
+        
         col2.plotly_chart(fig, use_container_width=True)
         
         
