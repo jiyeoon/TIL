@@ -15,7 +15,7 @@ st.write("""
         """)
 
 
-df = pd.read_pickle('./data/prd_training_data_with_ad_220107.pkl')
+df = pd.read_pickle('./data/prd_training_data_220107.pkl')
 #st.write(df.dtypes)
 
 prd_no = st.text_input('Enter product no', '2826341919')
@@ -55,20 +55,20 @@ if st.button('Enter'):
         fig = make_subplots(specs=[[{'secondary_y' : True}]])
         
         fig.add_trace(
-            go.Scatter(x=result['날짜'], y=result['판매량'],
-                    mode='lines', name='판매량'),
+            go.Scatter(x=result['날짜'], y=result['가격'],
+                    mode='lines', name='가격'),
             secondary_y = False,
         )
         
         fig.add_trace(
-            go.Scatter(x=result['날짜'], y=result['가격'], mode='lines', name='가격'),
-            secondary_y = True
+            go.Scatter(x=result['날짜'], y=result['판매량'], mode='lines', name='판매량'),
+            secondary_y = True,
         )
         
         fig.update_xaxes(title_text="날짜")
         
-        fig.update_yaxes(title_text='판매량', secondary_y=False, tickformat='000')
-        fig.update_yaxes(title_text='가격', secondary_y=True, tickformat='000')
+        fig.update_yaxes(title_text='가격', secondary_y=False, tickformat='000')
+        fig.update_yaxes(title_text='판매량', secondary_y=True, tickformat='000')
         
         col2.plotly_chart(fig, use_container_width=True)
     
@@ -86,20 +86,20 @@ if st.button('Enter'):
         fig = make_subplots(specs=[[{'secondary_y' : True}]])
         
         fig.add_trace(
-            go.Scatter(x=tmp2['가격'], y=tmp2['판매량'],
-                    mode='lines+markers', name='판매량'),
+            go.Scatter(x=tmp2['가격'], y=tmp2['판매량/날짜수'],
+                    mode='lines+markers', name='판매량/날짜수'),
             secondary_y = False,
         )
         
         fig.add_trace(
-            go.Scatter(x=tmp2['가격'], y=tmp2['판매량/날짜수'], mode='lines+markers', name='판매량/날짜수'),
+            go.Scatter(x=tmp2['가격'], y=tmp2['판매량'], mode='lines+markers', name='판매량'),
             secondary_y = True
         )
         
         fig.update_xaxes(title_text="가격")
         
-        fig.update_yaxes(title_text='판매량', secondary_y=False, tickformat='000')
-        fig.update_yaxes(title_text='판매량/날짜수', secondary_y=True, tickformat='000')
+        fig.update_yaxes(title_text='판매량', secondary_y=True, tickformat='000')
+        fig.update_yaxes(title_text='판매량/날짜수', secondary_y=False, tickformat='000')
         
         col2.plotly_chart(fig, use_container_width=True)
         
