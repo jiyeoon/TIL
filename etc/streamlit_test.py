@@ -24,11 +24,6 @@ if st.button('Enter'):
     tmp = df[df.prd_no == prd_no]
     info = tmp.iloc[0]
     
-    # dic = {
-    #     '날짜' : ast.literal_eval(info['train_ds']),
-    #     '판매량' : np.square(ast.literal_eval(info['train_y'])),
-    #     '가격' : ast.literal_eval(info['train_avg_prc'])
-    # }
     dic = {
         '날짜' : info['train_ds'],
         '판매량' : np.square(info['train_y']),
