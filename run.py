@@ -26,6 +26,7 @@ def main():
         sql = "SELECT * FROM product WHERE prd_no={}".format(prd_no)
         cur.execute(sql)
         data = cur.fetchone()
+        st.session_state['data'] = data
         dic = {
             '날짜' : ast.literal_eval(data[1]),
             '판매량' : np.square(ast.literal_eval(data[2])),
