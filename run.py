@@ -13,6 +13,7 @@ import sqlite3
 con = sqlite3.connect('./test.db')
 cur = con.cursor()
 
+
 def main():
     st.set_page_config(layout='wide')
     st.write("""
