@@ -98,5 +98,3 @@ if st.button('Enter'):
         
         col2.plotly_chart(fig, use_container_width=True)
         
-        
-        
