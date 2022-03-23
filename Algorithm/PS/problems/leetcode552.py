@@ -5,3 +5,5 @@ class Solution:
     		a, b = sum(C[:3]) % m, sum(C[3:]) % m
     		C = [a, C[0], C[1], a + b, C[3], C[4]]
     	return (sum(C) % m)
+ 
+ 
