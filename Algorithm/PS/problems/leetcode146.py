@@ -1,3 +1,4 @@
+import collections 
 class LRUCache:
 
     def __init__(self, capacity: int):
@@ -21,7 +22,4 @@ class LRUCache:
                 self.remain -= 1
             else:
                 self.dic.popitem(last=False)
-         self.dic[key] = value
-        
-        
-        
+        self.dic[key] = value
