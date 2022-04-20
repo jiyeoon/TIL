@@ -23,3 +23,5 @@ class LRUCache:
             else:
                 self.dic.popitem(last=False)
         self.dic[key] = value
+        
+        
