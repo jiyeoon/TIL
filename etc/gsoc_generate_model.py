@@ -65,3 +65,5 @@ for com in comb:
 # save to csv
 df = pd.DataFrame(data_frame)
 df.to_csv('./resutl.csv')
+
+
