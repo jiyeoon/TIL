@@ -67,3 +67,31 @@ df = pd.DataFrame(data_frame)
 df.to_csv('./resutl.csv')
 
 
+class Trie:
+    def __init__(self):
+        self.children = {}
+        self.worddict = defaultdict(int)
+
+class AutocompleteSystem:
+
+    def __init__(self, sentences: List[str], times: List[int]):
+        self.root = Trie()
+        self.prefix = ""
+        
+        for sentence, time in zip(sentences, times):
+            self.root.worddict[sentence] = times
+            self.addSentence(sentence, time)
+        
+        
+    def addSentence(self, sentence, time):
+        self.curr = self.root
+        
+        for c in sentence:
+            if c in self.curr.children:
+                self
+            else:
+                self.curr.children[c] = Trie()
+                self.curr.worddict[sentence] = time
+            self.curr = self.curr.children[c]
+
+    def input(self, c: str) -> List[str]:
