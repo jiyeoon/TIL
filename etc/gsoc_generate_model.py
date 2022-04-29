@@ -93,5 +93,3 @@ class AutocompleteSystem:
                 self.curr.children[c] = Trie()
                 self.curr.worddict[sentence] = time
             self.curr = self.curr.children[c]
-
-    def input(self, c: str) -> List[str]:
