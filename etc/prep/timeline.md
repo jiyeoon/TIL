@@ -3,7 +3,6 @@
 
 - [ ] cracking the coding interview 완독하기
 - [ ] DSA 완독하기
-- [ ] 
 - [ ] Leetcode google interview 문제 끝내기
 
 # 첫번재 면접 질문
