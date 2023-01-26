@@ -2,7 +2,7 @@
 import pyautogui as pag
 import time
 
-n = 30
+n = 5
 while True:
     n = -n
     pag.moveRel(n, 0)
